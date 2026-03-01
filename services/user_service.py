@@ -14,9 +14,9 @@ def register_user(username: str, email: str, password: str):
             "password": hashed_password
         }).execute()
 
-        return {"message": "تم التسجيل بنجاح ✅", "user": response.data}
+        return {"message": "Registration successful ✅", "user": response.data}
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}
 
 
 def login_user(email: str, password: str):
@@ -25,7 +25,7 @@ def login_user(email: str, password: str):
         response = supabase.table("users").select("*").eq("email", email).execute()
 
         if not response.data:
-            return {"error": "المستخدم غير موجود ❌"}
+            return {"error": "User not found ❌"}
 
         user = response.data[0]
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
@@ -33,13 +33,13 @@ def login_user(email: str, password: str):
         if user["password"] == hashed_password:
             token = create_access_token(data={"sub": str(user["id"])})
             return {
-                "message": "تسجيل الدخول ناجح ✅",
+                "message": "Login successful ✅",
                 "access_token": token,
                 "token_type": "bearer",
                 "user_id": user["id"],
                 "username": user["username"]
             }
         else:
-            return {"error": "كلمة المرور خاطئة ❌"}
+            return {"error": "Incorrect password ❌"}
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}

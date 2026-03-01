@@ -1,49 +1,49 @@
 # FastAPI LLM Project 🚀
 
-مشروع FastAPI متكامل يدمج تقنيات الذكاء الاصطناعي من Cohere مع قاعدة بيانات Supabase ونظام حماية JWT.
+A comprehensive FastAPI project integrating AI technologies from Cohere with Supabase database and JWT security system.
 
-## المميزات الأساسية ✨
+## Key Features ✨
 
-- **نظام المستخدمين**: تسجيل، دخول، وحماية المسارات باستخدام JWT tokens.
-- **تحليل النصوص والملفات**:
-    - دعم رفع ملفات PDF واستخراج النصوص منها.
-    - تحليل شامل للنص (تلخيص، كلمات مفتاحية، مشاعر، لغة).
-    - ترجمة النصوص لأي لغة.
-    - تدقيق لغوي وإملائي (Proofreading).
-- **الدردشة الذكية**:
-    - نظام محادثة يحفظ السياق (Context-aware chat).
-    - سجل محادثات لكل مستخدم.
-- **البحث الدلالي (Semantic Search)**:
-    - تحويل النصوص إلى Embeddings.
-    - البحث باستخدام pgvector في Supabase.
+- **User System**: Registration, login, and path protection using JWT tokens.
+- **Text & File Analysis**:
+    - Support for uploading PDF files and extracting text from them.
+    - Comprehensive text analysis (summarization, keywords, sentiment, language).
+    - Text translation to any language.
+    - Proofreading and grammar check.
+- **Smart Chat**:
+    - Context-aware chat system.
+    - Conversation history for each user.
+- **Semantic Search**:
+    - Convert text to Embeddings.
+    - Search using pgvector in Supabase.
 
-## التقنيات المستخدمة 🛠️
+## Technologies Used 🛠️
 
 - **Backend**: FastAPI (Python)
-- **AI Models**: Cohere (Command R+, Embed Arabic/English)
+- **AI Models**: Cohere (Command R+, Embed English/Arabic)
 - **Database**: Supabase (PostgreSQL + pgvector)
 - **Auth**: JWT (jose)
 - **File Processing**: PyPDF
 
-## هيكلة المشروع 📂
+## Project Structure 📂
 
 ```
 fastapi_project/
-├── controllers/    # مسارات الـ API
-├── models/         # نماذج البيانات (Pydantic)
-├── services/       # منطق العمل والخدمات الخارجية
-├── main.py         # نقطة انطلاق التطبيق
-└── requirements.txt # المكتبات المطلوبة
+├── controllers/    # API routes
+├── models/         # Data models (Pydantic)
+├── services/       # Business logic and external services
+├── main.py         # Application entry point
+└── requirements.txt # Required libraries
 ```
 
-## التشغيل 🚀
+## Running the Project 🚀
 
-1. تثبيت المكتبات:
+1. Install libraries:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. إعداد ملف `.env`:
+2. Setup `.env` file:
    ```env
    COHERE_API_KEY=your_key
    SUPABASE_URL=your_url
@@ -51,31 +51,30 @@ fastapi_project/
    SECRET_KEY=your_secret
    ```
 
-3. تشغيل الخادم:
+3. Run the server:
    ```bash
    uvicorn main:app --reload
    ```
 
-## أهم المسارات (EndPoints) 📍
+## Key Endpoints 📍
 
 ### Authentication
-- `POST /api/auth/register`: تسجيل جديد
-- `POST /api/auth/login`: تسجيل دخول (يعيد token)
+- `POST /api/auth/register`: New registration
+- `POST /api/auth/login`: Login (returns token)
 
 ### Chat
-- `POST /api/chat`: التحدث مع الـ AI (يحفظ سياق المحادثة)
-- `GET /api/chat/history`: سجل المحادثات
-- `DELETE /api/chat/history`: مسح السجل
+- `POST /api/chat`: Talk to AI (saves conversation context)
+- `GET /api/chat/history`: Conversation history
+- `DELETE /api/chat/history`: Clear history
 
 ### Files & Analysis
-- `POST /api/files/upload-pdf`: رفع وتحليل ملف PDF
-- `POST /api/files/analyze`: تحليل نص مباشر
-- `POST /api/files/translate`: ترجمة نص
-- `POST /api/files/proofread`: تدقيق نص
-- `GET /api/files/history`: تاريخ التحليلات
-- `DELETE /api/files/history`: مسح تاريخ التحليلات
+- `POST /api/files/upload-pdf`: Upload and analyze PDF file
+- `POST /api/files/analyze`: Direct text analysis
+- `POST /api/files/translate`: Translate text
+- `POST /api/files/proofread`: Proofread text
+- `GET /api/files/history`: Analysis history
+- `DELETE /api/files/history`: Clear analysis history
 
 ### Embeddings
-- `POST /api/embedding/`: إنشاء embedding لنص
-- `GET /api/embedding/search`: بحث دلالي في المحتوى المخزن
-
+- `POST /api/embedding/`: Create embedding for text
+- `GET /api/embedding/search`: Semantic search in stored content

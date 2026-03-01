@@ -35,30 +35,30 @@ def get_me(user_id: str = Depends(get_current_user)):
 # ========== CHAT ==========
 @router.post("/chat", tags=["Chat"])
 def chat_endpoint(request: ChatRequest, user_id: str = Depends(get_current_user)):
-    """طرح سؤال والحصول على إجابة"""
+    """Ask a question and get an answer"""
     return chat(user_id, request.message)
 
 @router.get("/chat/history", tags=["Chat"])
 def history(user_id: str = Depends(get_current_user)):
-    """احصل على سجل الدردشة"""
+    """Get chat history"""
     return get_chat_history(user_id)
 
 @router.delete("/chat/history", tags=["Chat"])
 def clear_history(user_id: str = Depends(get_current_user)):
-    """احذف سجل الدردشة"""
+    """Delete chat history"""
     return clear_chat_history(user_id)
 
 # ========== FILES ==========
 @router.post("/files/analyze", tags=["Files"])
 def analyze(request: AnalyzeTextRequest, user_id: str = Depends(get_current_user)):
-    """تحليل الملف/النص"""
+    """Analyze file/text"""
     return analyze_file(user_id, "text_analysis", request.text)
 
 @router.post("/files/upload-pdf", tags=["Files"])
 async def upload_pdf(file: UploadFile = File(...), user_id: str = Depends(get_current_user)):
-    """رفع ملف PDF وتحليله"""
+    """Upload PDF file and analyze it"""
     if not file.filename.lower().endswith(".pdf"):
-        return {"error": "يرجى رفع ملف بصيغة PDF فقط ❌"}
+        return {"error": "Please upload a PDF file only ❌"}
     
     file_bytes = await file.read()
     return analyze_pdf(user_id, file.filename, file_bytes)
@@ -71,13 +71,14 @@ def create_embedding_endpoint(request: EmbeddingRequest, user_id: str = Depends(
 
 @router.get("/embedding/search", tags=["Embedding"])
 def search_embedding(query: str, limit: int = 5, user_id: str = Depends(get_current_user)):
-    """البحث في الـ embeddings"""
+    """Search in embeddings"""
     return search_embeddings(user_id, query, limit)
 
 @router.get("/embedding/all", tags=["Embedding"])
 def get_embeddings(user_id: str = Depends(get_current_user)):
-    """احصل على جميع الـ embeddings"""
+    """Get all embeddings"""
     return get_all_embeddings(user_id)
+
 @router.post("/embedding/generate", tags=["Embedding"])
 def generate_embedding_endpoint(request: EmbeddingRequest, user_id: str = Depends(get_current_user)):
     """Generate embedding without saving to database"""

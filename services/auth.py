@@ -5,7 +5,7 @@ from services.jwt_service import verify_token
 scheme = HTTPBearer()
 
 async def get_current_user(credentials = Depends(scheme)) -> str:
-    """التحقق من JWT token"""
+    """Verify JWT token"""
     token = credentials.credentials
     user_id = verify_token(token)
     

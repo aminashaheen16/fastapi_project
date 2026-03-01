@@ -12,124 +12,117 @@ if not COHERE_API_KEY:
 co = cohere.ClientV2(api_key=COHERE_API_KEY)
 
 def analyze_text(text: str) -> str:
-    """تحليل النص باستخدام Cohere"""
+    """Analyze text using Cohere"""
     try:
-        response = co.generate(
-            model="command-a-03-2025",
+        response = co.chat(
+            model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"حلل النص التالي وأعطني فهمًا شاملاً: {text}"
+                    "content": f"Analyze the following text and provide a comprehensive understanding: {text}"
                 }
-            ],
-            max_tokens=1024
+            ]
         )
         return response.message.content[0].text
     except Exception as e:
-        return f"خطأ في التحليل: {str(e)}"
+        return f"Analysis error: {str(e)}"
 
 def summarize_text(text: str) -> str:
-    """تلخيص النص"""
+    """Summarize text"""
     try:
-        response = co.generate(
+        response = co.chat(
             model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"اختصر هذا النص في 3-4 جمل: {text}"
+                    "content": f"Summarize this text in 3-4 sentences: {text}"
                 }
-            ],
-            max_tokens=256
+            ]
         )
         return response.message.content[0].text
     except Exception as e:
-        return f"خطأ: {str(e)}"
+        return f"Error: {str(e)}"
 
 def extract_keywords(text: str) -> list:
-    """استخراج الكلمات المفتاحية"""
+    """Extract keywords"""
     try:
-        response = co.generate(
+        response = co.chat(
             model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"استخرج أهم 5-7 كلمات مفتاحية من هذا النص: {text}"
+                    "content": f"Extract the top 5-7 keywords from this text: {text}"
                 }
-            ],
-            max_tokens=256
+            ]
         )
         return response.message.content[0].text.split(",")
     except Exception as e:
-        return [f"خطأ: {str(e)}"]
+        return [f"Error: {str(e)}"]
 
 
 def detect_sentiment(text: str) -> str:
-    """كشف شعور النص (إيجابي/سلبي/محايد)"""
+    """Detect sentiment of the text (positive/negative/neutral)"""
     try:
-        response = co.generate(
-            model="command-a-03-2025",
+        response = co.chat(
+            model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"حدد شعور النص التالي بكلمة واحدة (positive، negative، neutral): {text}"
+                    "content": f"Identify the sentiment of the following text with one word (positive, negative, neutral): {text}"
                 }
-            ],
-            max_tokens=60
+            ]
         )
         return response.message.content[0].text.strip()
     except Exception as e:
-        return f"خطأ: {str(e)}"
+        return f"Error: {str(e)}"
 
 
 def detect_language(text: str) -> str:
-    """كشف لغة النص"""
+    """Detect language of the text"""
     try:
-        response = co.generate(
-            model="command-a-03-2025",
+        response = co.chat(
+            model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"ما هي لغة النص التالي؟ {text}"
+                    "content": f"What is the language of the following text? {text}"
                 }
-            ],
-            max_tokens=60
+            ]
         )
         return response.message.content[0].text.strip()
     except Exception as e:
-        return f"خطأ: {str(e)}"
+        return f"Error: {str(e)}"
 
 
 def translate_text(text: str, target_lang: str) -> str:
-    """ترجمة النص إلى اللغة الهدف"""
+    """Translate text to target language"""
     try:
-        response = co.generate(
-            model="command-a-03-2025",
+        response = co.chat(
+            model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"ترجم النص التالي إلى {target_lang}: {text}"
+                    "content": f"Translate the following text to {target_lang}: {text}"
                 }
-            ],
-            max_tokens=512
+            ]
         )
         return response.message.content[0].text.strip()
     except Exception as e:
-        return f"خطأ: {str(e)}"
+        return f"Error: {str(e)}"
 
 
 def proofread_text(text: str) -> str:
-    """تدقيق النص وتحسينه"""
+    """Proofread and improve text"""
     try:
-        response = co.generate(
-            model="command-a-03-2025",
+        response = co.chat(
+            model="command-r-plus",
             messages=[
                 {
                     "role": "user",
-                    "content": f"قم بتدقيق النص التالي وإعادة كتابته بشكل أفضل مع الحفاظ على المعنى: {text}"
+                    "content": f"Proofread the following text and rewrite it better while maintaining the meaning: {text}"
                 }
-            ],
-            max_tokens=512
+            ]
         )
         return response.message.content[0].text.strip()
     except Exception as e:
-        return f"خطأ: {str(e)}"
+        return f"Error: {str(e)}"

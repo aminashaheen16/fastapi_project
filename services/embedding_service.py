@@ -5,11 +5,11 @@ import math
 
 
 def create_embedding(user_id: str, text: str, title: str):
-    """إنشاء embedding وحفظه في جدول Supabase"""
+    """Create embedding and save to Supabase table"""
     try:
         supabase = get_supabase()
 
-        # توليد المتجه
+        # Generate vector
         embedding_response = co.embed(
             model="embed-english-v3.0",
             texts=[text],
@@ -26,17 +26,17 @@ def create_embedding(user_id: str, text: str, title: str):
             "embedding": embedding_vector
         }).execute()
 
-        return {"message": "تم إنشاء embedding بنجاح ✅", "id": emb_id}
+        return {"message": "Embedding created successfully ✅", "id": emb_id}
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}
 
 
 def search_embeddings(user_id: str, query: str, limit: int = 5):
-    """البحث الدلالي في الـ embeddings للمستخدم"""
+    """Semantic search in user's embeddings"""
     try:
         supabase = get_supabase()
 
-        # توليد embedding للبحث
+        # Generate search embedding
         response = co.embed(
             model="embed-english-v3.0",
             texts=[query],
@@ -44,11 +44,11 @@ def search_embeddings(user_id: str, query: str, limit: int = 5):
         )
         query_vec = response.embeddings[0]
 
-        # جلب كل embeddings الخاصة بالمستخدم
+        # Fetch all user embeddings
         res = supabase.table("embeddings").select("*").eq("user_id", user_id).execute()
         data = res.data if res.data else []
 
-        # دالة تشابه كوزاين
+        # Cosine similarity function
         def cosine(a, b):
             dot = sum(x * y for x, y in zip(a, b))
             norm_a = math.sqrt(sum(x * x for x in a))
@@ -59,21 +59,21 @@ def search_embeddings(user_id: str, query: str, limit: int = 5):
         top = ranked[:limit]
         return {"results": top}
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}
 
 
 def get_all_embeddings(user_id: str):
-    """إرجاع جميع embeddings لمستخدم"""
+    """Return all embeddings for a user"""
     try:
         supabase = get_supabase()
         res = supabase.table("embeddings").select("*").eq("user_id", user_id).execute()
         return {"embeddings": res.data}
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}
 
 
 def generate_embedding_only(text: str):
-    """إنشاء embedding وإرجاعه فقط بدون حفظه في قاعدة البيانات"""
+    """Generate embedding and return it without saving to database"""
     try:
         embedding_response = co.embed(
             model="embed-english-v3.0",
@@ -89,4 +89,4 @@ def generate_embedding_only(text: str):
         }
 
     except Exception as e:
-        return {"error": f"خطأ: {str(e)}"}
+        return {"error": f"Error: {str(e)}"}
