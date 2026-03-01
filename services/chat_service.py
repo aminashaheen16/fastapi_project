@@ -28,32 +28,16 @@ def save_chat_message(user_id: str, message: str, response: str):
 
 
 def chat(user_id: str, message: str):
-    """دردشة مع Cohere مع مراعاة سجل المحادثة"""
+    """دردشة مع Cohere"""
     try:
-        supabase = get_supabase()
-        
-        # جلب آخر 10 رسائل من السجل لتوفير سياق للـ AI
-        history_response = supabase.table("chat_history") \
-            .select("message, response") \
-            .eq("user_id", user_id) \
-            .order("created_at", desc=True) \
-            .limit(10) \
-            .execute()
-        
-        # ترتيب التاريخ من الأقدم للأحدث وإعداده للـ messages
-        messages = []
-        if history_response.data:
-            # البيانات تأتي من الأحدث للأقدم، نحتاج عكسها
-            for entry in reversed(history_response.data):
-                messages.append({"role": "user", "content": entry["message"]})
-                messages.append({"role": "assistant", "content": entry["response"]})
-        
-        # إضافة الرسالة الحالية
-        messages.append({"role": "user", "content": message})
-
         response = co.chat(
-            model="command-r-plus", # استخدام الموديل الأفضل للدردشة
-            messages=messages
+            model="command-a-03-2025",
+            messages=[
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ]
         )
 
         ai_response = response.message.content[0].text

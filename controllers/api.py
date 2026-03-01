@@ -1,14 +1,11 @@
 from fastapi import APIRouter, Depends, File, UploadFile
 from models.request_model import RegisterRequest, LoginRequest
-from models.analysis_model import AnalyzeTextRequest, TranslateRequest, ProofreadRequest
+from models.analysis_model import AnalyzeTextRequest
 from models.chat_model import ChatRequest, EmbeddingRequest
 from services.user_service import register_user, login_user
-from services.analysis_service import (
-    analyze_file, get_analysis_history, get_analysis_by_id, 
-    analyze_pdf, translate_content, proofread_content, clear_analysis_history
-)
+from services.analysis_service import analyze_file, get_analysis_history, get_analysis_by_id, analyze_pdf
 from services.chat_service import chat, get_chat_history, clear_chat_history
-from services.embedding_service import create_embedding, search_embeddings, get_all_embeddings
+from services.embedding_service import create_embedding, search_embeddings, get_all_embeddings, generate_embedding_only
 from services.auth import get_current_user
 
 router = APIRouter()
@@ -66,31 +63,6 @@ async def upload_pdf(file: UploadFile = File(...), user_id: str = Depends(get_cu
     file_bytes = await file.read()
     return analyze_pdf(user_id, file.filename, file_bytes)
 
-@router.get("/files/history", tags=["Files"])
-def get_history(user_id: str = Depends(get_current_user)):
-    """احصل على سجل التحليلات"""
-    return get_analysis_history(user_id)
-
-@router.delete("/files/history", tags=["Files"])
-def delete_history(user_id: str = Depends(get_current_user)):
-    """احذف سجل التحليلات"""
-    return clear_analysis_history(user_id)
-
-@router.get("/files/{analysis_id}", tags=["Files"])
-def get_analysis_details(analysis_id: str, user_id: str = Depends(get_current_user)):
-    """احصل على تفاصيل تحليل معين"""
-    return get_analysis_by_id(analysis_id)
-
-@router.post("/files/translate", tags=["Files"])
-def translate(request: TranslateRequest, user_id: str = Depends(get_current_user)):
-    """ترجمة نص"""
-    return translate_content(request.text, request.target_lang)
-
-@router.post("/files/proofread", tags=["Files"])
-def proofread(request: ProofreadRequest, user_id: str = Depends(get_current_user)):
-    """تدقيق نص لغوياً"""
-    return proofread_content(request.text)
-
 # ========== EMBEDDINGS ==========
 @router.post("/embedding/", tags=["Embedding"])
 def create_embedding_endpoint(request: EmbeddingRequest, user_id: str = Depends(get_current_user)):
@@ -106,3 +78,7 @@ def search_embedding(query: str, limit: int = 5, user_id: str = Depends(get_curr
 def get_embeddings(user_id: str = Depends(get_current_user)):
     """احصل على جميع الـ embeddings"""
     return get_all_embeddings(user_id)
+@router.post("/embedding/generate", tags=["Embedding"])
+def generate_embedding_endpoint(request: EmbeddingRequest, user_id: str = Depends(get_current_user)):
+    """Generate embedding without saving to database"""
+    return generate_embedding_only(request.text)

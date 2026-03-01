@@ -19,11 +19,3 @@ app.add_middleware(
 
 # Include router with /api prefix
 app.include_router(router, prefix="/api")
-
-@app.get("/")
-def read_root():
-    return {
-        "message": "Welcome to FastAPI LLM API 🚀",
-        "docs": "/docs",
-        "api_root": "/api"
-    }
